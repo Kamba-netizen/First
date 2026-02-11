@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string.h>
+
 class Mystring {
     private:
     char* string_content;
@@ -19,8 +20,21 @@ class Mystring {
     char at(int i) const;
     void Print() const;
     void Println() const;
+
     Mystring& assign(const Mystring& str);
     Mystring& assign(const char* str);
+
+    Mystring& insert(int loc, const Mystring& str);
+    Mystring& insert(int loc, const char* str);
+    Mystring& insert(int loc, char c);
+
+    Mystring& erase(int loc, int num);
+
+    int find(int find_from, const Mystring& str) const;
+    int find(int find_from, const char* str) const;
+    int find(int find_from, const char c) const;
+
+    int compare(const Mystring& str) const;
 };
 
 Mystring::Mystring(char c) {
@@ -101,18 +115,110 @@ void Mystring::reserve(int size) {
 }
 char Mystring::at(int i) const {
     if (i > str_len || i < 0)
-        return NULL;
+        return 0;
     else
         return string_content[i];
 }
+Mystring& Mystring::insert(int loc, const Mystring& str) {
+    if (loc < 0 || loc > str_len)
+        return* this;
 
+    if (str_len + str.str_len > memory_capacity) {
+        if (memory_capacity * 2 > str_len + str.str_len) 
+            memory_capacity *= 2;
+        else
+            memory_capacity = str_len + str.str_len;
+
+        char* prev_string_content = string_content;
+        string_content = new char[memory_capacity];
+
+        int i;
+        for (i = 0; i < loc; i++)
+            string_content[i] = prev_string_content[i];
+        
+        for (int j = 0; j != str.str_len; j++) 
+            string_content[i+j] = str.string_content[j];
+        
+        for (; i < str_len; i++) 
+            string_content[str.str_len + i] = prev_string_content[i];
+        
+        delete[] prev_string_content;
+
+        str_len = str_len + str.str_len;
+        return* this;
+    }
+
+    for (int i = str_len - 1; i >= loc; i--) 
+        string_content[i + str.str_len] = string_content[i]; 
+
+    for (int i = 0; i < str.str_len; i++) 
+        string_content[i + loc] = str.string_content[i];
+    str_len = str_len + str.str_len;
+    return* this;
+}
+Mystring& Mystring::insert(int loc, const char* str) {
+    Mystring temp(str);
+    return insert(loc, temp);
+}
+Mystring& Mystring::insert(int loc, char c) {
+    Mystring temp(c);
+    return insert(loc, temp);
+}
+Mystring& Mystring::erase(int loc, int num) {
+    if (num < 0 || loc > str_len || loc < 0)
+        return* this;
+    if (loc + num >= str_len) {
+        str_len = loc;
+        return* this;
+    }
+    
+    for (int i = loc + num; i < str_len; i++) {
+        string_content[i - num] = string_content[i];
+    }
+    str_len -= num;
+    return* this;
+}
+int Mystring::find(int find_from, const Mystring& str) const {
+    int i, j;
+    if (str.str_len == 0)
+        return -1;
+    for (i = find_from; i <= str_len - str.str_len; i++) {
+        for (j = 0; j < str.str_len; j++) {
+            if (string_content[i + j] != str.string_content[j])
+                break;
+        }
+        if (j == str.str_len)
+            return i;
+    }
+    return -1;
+}
+int Mystring::find(int find_from, const char* str) const {
+    Mystring temp(str);
+    return find(find_from, temp);
+}
+int Mystring::find(int find_from, char c) const {
+    Mystring temp(c);
+    return find(find_from, temp);
+}
+int Mystring::compare(const Mystring& str) const {
+    for (int i = 0; i < std::min(str_len, str.str_len); i++) {
+        if (string_content[i] > str.string_content[i])
+            return 1;
+        else if (string_content[i] < str.string_content[i])
+            return -1;
+    }
+    
+    if (str_len == str.str_len) return 0;
+
+    else if (str_len > str.str_len)
+        return 1;
+    return -1;
+}
 int main() {
-  Mystring str1("very very very long string");
-  str1.reserve(30);
+  Mystring str1("abcde");
+  Mystring str2("abcde");
 
-  std::cout << "Capacity : " << str1.capacity() << std::endl;
-  std::cout << "String length : " << str1.Length() << std::endl;
-  str1.Println();
-  std::cout << str1.at(23) << std::endl;
+  std::cout << "str1 and str2 compare : " << str1.compare(str2) << std::endl;
+
   return 0;
 }
