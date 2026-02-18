@@ -171,7 +171,7 @@ Mystring& Mystring::erase(int loc, int num) {
         str_len = loc;
         return* this;
     }
-    
+
     for (int i = loc + num; i < str_len; i++) {
         string_content[i - num] = string_content[i];
     }
@@ -221,4 +221,5 @@ int main() {
   std::cout << "str1 and str2 compare : " << str1.compare(str2) << std::endl;
 
   return 0;
+  
 }
