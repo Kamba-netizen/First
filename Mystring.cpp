@@ -36,12 +36,9 @@ class Mystring {
 
     int compare(const Mystring& str) const;
 };
-
-Mystring::Mystring(char c) {
+Mystring::Mystring(char c) : str_len(1), memory_capacity(1) {
     string_content = new char[1];
     string_content[0] = c;
-    str_len = 1;
-    memory_capacity = 1;
 }
 Mystring::Mystring(const char* str) {
     str_len = strlen(str);
@@ -221,5 +218,5 @@ int main() {
   std::cout << "str1 and str2 compare : " << str1.compare(str2) << std::endl;
 
   return 0;
-  
+
 }
