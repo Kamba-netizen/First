@@ -2,19 +2,18 @@
 using namespace std;
 
 int main() {
-    int n, a;
+    int n;
     cin >> n;
-
     int* arr = new int[n];
 
     for (int i = 0; i < n; i++) {
-        cin >> a;
-        arr[i] = a;
+        int val;
+        cin >> val;
+        arr[i] = val;
     }
-
     for (int i = 0; i < n-1; i++) {
         for (int j = 0; j < n-i-1; j++) {
-            if(arr[j] > arr[j+1]) {
+            if (arr[j] > arr[j+1]){
                 int temp;
                 temp = arr[j];
                 arr[j] = arr[j+1];
@@ -22,9 +21,7 @@ int main() {
             }
         }
     }
-    for (int i = 0; i < n; i++){
+    for (int i = 0; i < n; i++)
         cout << arr[i] << "\n";
-    }
-    delete arr[];
     return 0;
 }
